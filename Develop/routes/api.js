@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { json } = require("express");
 const Workout = require("../models/workout")
 
 
@@ -13,18 +14,8 @@ router.post("/api/workouts", (req, res) => {
 		})
 });
 
-router.post("/api/workouts/bulk", ({ body }, res) => {
-	Workouts.insertMany(body)
-		.then(dbWorkouts => {
-			res.json(dbWorkouts);
-		})
-		.catch(err => {
-			res.status(400).json(err);
-		});
-});
-
-router.get("/api/workout", (req, res) => {
-	Workouts.find({})
+router.post("/api/workout", (req, res) => {
+	Workouts.find({body})
 		.then(getLastWorkout => {
 			res.json(getLastWorkout);
 		})
@@ -34,36 +25,32 @@ router.get("/api/workout", (req, res) => {
 });
 
 router.put("/api/workouts/:id", (req, res) => {
-	Workouts.create({ body })
+	Workouts.findByIdAndUpdate(req.params.id, )
+	{$set: {"Workout.id": req.body.id}}, 
+        {new: true},
 		.then(addExercise => {
-			res.json(addExercise);
+			res.json({})
 		})
 		.catch(err => {
 			res.status(400).json(err);
 
-		})
+		});
+});
+
+router.put("/api/workouts/range", (req, res, next) =>{
+	Workouts.find({body})
+	.then(getWorkoutsInRange =>{
+		res.json(getWorkoutsInRange);
+	})
+	.catch(err => {
+		res.status(400).json(err);
+	})
 })
 
-
-router.post("/api/workout/range", function (req, res) {
-	Workouts.getWorkoutsInRange = "range = " + req.params.id;
-
-
-
-	Workouts.update({
-		sleepy: req.body.sleepy
-	}, condition, function (result) {
-		if (result.changedRows == 0) {
-			// If no rows were changed, then the ID must not exist, so 404
-			return res.status(404).end();
-		} else {
-			res.status(200).end();
-		}
-	});
-});
 // router.put("/api/workouts/:id", (req, res) =>{
 // 	Workouts.findByIdAndUpdate(id, { day: 'type' }, options, callback)
 // 	new: true
 // })
+
 
 module.exports = router;
