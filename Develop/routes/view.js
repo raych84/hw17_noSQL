@@ -1,7 +1,7 @@
 // Serve up HTML files here
 const router = require("express").Router();
 const Workout = require("../models/workout")
-
+const path = require("path")
 
 router.post("/view/workout", (req, res) => {
 	Workout.create({})
